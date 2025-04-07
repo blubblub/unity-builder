@@ -79,6 +79,7 @@ if [ -n "$UNITY_CREDENTIALS" ]; then
 else
   # Fallback to single set of credentials
   echo "Requesting activation with default credentials"
+  echo "Bulk credentials are empty: $UNITY_CREDENTIALS"
   activate_with_credentials "$UNITY_EMAIL" "$UNITY_PASSWORD" "$UNITY_SERIAL"
   UNITY_EXIT_CODE=$?
   [ $UNITY_EXIT_CODE -eq 0 ] && success=true
