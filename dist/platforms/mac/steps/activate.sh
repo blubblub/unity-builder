@@ -4,31 +4,90 @@
 echo "Changing to \"$ACTIVATE_LICENSE_PATH\" directory."
 pushd "$ACTIVATE_LICENSE_PATH"
 
-echo "Requesting activation"
+activate_with_credentials() {
+  local email=$1
+  local pass=$2
+  local serial=$3
 
-# Activate license
-/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity \
-  -logFile - \
-  -batchmode \
-  -nographics \
-  -quit \
-  -serial "$UNITY_SERIAL" \
-  -username "$UNITY_EMAIL" \
-  -password "$UNITY_PASSWORD" \
-  -projectPath "$ACTIVATE_LICENSE_PATH"
+  echo "Trying to activate license for $email"
 
-# Store the exit code from the verify command
-UNITY_EXIT_CODE=$?
+  /Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity \
+    -logFile - \
+    -batchmode \
+    -nographics \
+    -quit \
+    -serial "$serial" \
+    -username "$email" \
+    -password "$pass" \
+    -projectPath "$ACTIVATE_LICENSE_PATH"
+  
+  return $?
+}
 
-#
-# Display information about the result
-#
-if [ $UNITY_EXIT_CODE -eq 0 ]; then
-  # Activation was a success
-  echo "Activation complete."
+success=false
+
+if [ -n "$UNITY_CREDENTIALS" ]; then
+  echo "Requesting activation with array of credentials..."
+
+  # Split the data into blocks (entries separated by blank lines)
+  IFS=$'\n\n' read -d '' -ra blocks <<< "$UNITY_CREDENTIALS"
+
+  # Initialize variables
+  email=""
+  pass=""
+  serial=""
+
+  # Loop over each block
+  for block in "${blocks[@]}"; do
+      # Trim leading/trailing whitespace
+      block=$(echo "$block" | sed '/^\s*$/d')
+
+
+      # Process each line in the block
+      while IFS= read -r line; do
+          key="${line%%:*}"
+          value="${line#*:}"
+
+          case "$key" in
+              EMAIL) email="$value" ;;
+              PASS) pass="$value" ;;
+              SERIAL) serial="$value" ;;
+          esac
+      done <<< "$block"
+
+      if [[ -n "$email" && -n "$pass" && -n "$serial" ]]; then
+        # Place your code here
+        activate_with_credentials "$email" "$pass" "$serial"
+        UNITY_EXIT_CODE=$?
+
+        if [ $UNITY_EXIT_CODE -eq 0 ]; then
+          # Write to ENV variables back, so return license can work.
+          export UNITY_EMAIL=$email
+          export UNITY_PASSWORD=$pass
+          export UNITY_SERIAL=$serial
+          echo "Activation complete with credentials: $email"
+          success=true
+
+          # Clear the variables
+          email=""
+          pass=""
+          serial=""
+        fi
+      fi
+      
+  done
 else
-  # Activation failed so exit with the code from the license verification step
-  echo "Unclassified error occured while trying to activate license."
+  # Fallback to single set of credentials
+  echo "Requesting activation with default credentials"
+  activate_with_credentials "$UNITY_EMAIL" "$UNITY_PASSWORD" "$UNITY_SERIAL"
+  UNITY_EXIT_CODE=$?
+  [ $UNITY_EXIT_CODE -eq 0 ] && success=true
+fi
+
+if $success; then
+  echo "License activation successful."
+else
+  echo "Unclassified error occurred while trying to activate license."
   echo "Exit code was: $UNITY_EXIT_CODE"
   echo "::error ::There was an error while trying to activate the Unity license."
   exit $UNITY_EXIT_CODE
