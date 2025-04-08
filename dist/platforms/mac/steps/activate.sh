@@ -65,7 +65,9 @@ if [ -n "$UNITY_CREDENTIALS" ]; then
           export UNITY_EMAIL=$email
           export UNITY_PASSWORD=$pass
           export UNITY_SERIAL=$serial
-          echo "Activation complete with credentials: $email"
+
+          cleaned_email="${email//@/AT}"
+          echo "Activation complete with credentials: $cleaned_email"
           success=true
 
           # Clear the variables

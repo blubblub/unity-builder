@@ -25,6 +25,7 @@ class ImageEnvironmentFactory {
       { name: 'UNITY_EMAIL', value: process.env.UNITY_EMAIL },
       { name: 'UNITY_PASSWORD', value: process.env.UNITY_PASSWORD },
       { name: 'UNITY_SERIAL', value: parameters.unitySerial },
+      { name: 'UNITY_CREDENTIALS', value: process.env.UNITY_CREDENTIALS },
       {
         name: 'UNITY_LICENSING_SERVER',
         value: parameters.unityLicensingServer,

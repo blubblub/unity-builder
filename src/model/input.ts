@@ -233,6 +233,10 @@ class Input {
     return Input.getInput('UNITY_SERIAL');
   }
 
+  static get unityCredentials(): string | undefined {
+    return Input.getInput('UNITY_CREDENTIALS');
+  }
+
   static get unityLicense(): string | undefined {
     return Input.getInput('UNITY_LICENSE');
   }

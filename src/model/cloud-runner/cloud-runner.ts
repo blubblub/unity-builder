@@ -180,6 +180,7 @@ class CloudRunner {
     content.unitySerial = ``;
     content.unityEmail = ``;
     content.unityPassword = ``;
+    content.unityCredentials = ``;
     const jsonContent = JSON.stringify(content, undefined, 4);
     await GitHub.updateGitHubCheck(jsonContent, CloudRunner.buildParameters.buildGuid);
   }

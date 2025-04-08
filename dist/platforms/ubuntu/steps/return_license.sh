@@ -7,6 +7,9 @@ if [[ -n "$UNITY_LICENSING_SERVER" ]]; then
   echo "Returning floating license: \"$FLOATING_LICENSE\""
   /opt/unity/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client --return-floating "$FLOATING_LICENSE"
 elif [[ -n "$UNITY_SERIAL" ]]; then
+  cleaned_email="${UNITY_EMAIL//@/AT}"
+
+  echo "Returning license: \"$UNITY_SERIAL\" email: \"$cleaned_email\""
   #
   # SERIAL LICENSE MODE
   #

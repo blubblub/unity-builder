@@ -125,15 +125,17 @@ class BuildParameters {
     if (Input.unityLicensingServer === '') {
       if (!Input.unitySerial && GitHub.githubInputEnabled) {
         // No serial was present, so it is a personal license that we need to convert
-        if (!Input.unityLicense) {
+        if (Input.unityLicense) {
+          unitySerial = this.getSerialFromLicenseFile(Input.unityLicense);
+        }
+        else if (!Input.unityCredentials)
           throw new Error(
-            `Missing Unity License File and no Serial was found. If this
-                            is a personal license, make sure to follow the activation
+                          `Missing Unity License File, no Serial was found and no credentials.
+                            If this is a personal license, make sure to follow the activation
                             steps and set the UNITY_LICENSE GitHub secret or enter a Unity
                             serial number inside the UNITY_SERIAL GitHub secret.`,
           );
-        }
-        unitySerial = this.getSerialFromLicenseFile(Input.unityLicense);
+        }        
       } else {
         unitySerial = Input.unitySerial!;
       }
