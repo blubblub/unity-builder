@@ -4,6 +4,9 @@
 echo "Changing to \"$ACTIVATE_LICENSE_PATH\" directory."
 pushd "$ACTIVATE_LICENSE_PATH"
 
+cleaned_email="${UNITY_EMAIL//@/AT}"
+echo "Returning license for email: \"$cleaned_email\""
+
 /Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity \
   -logFile - \
   -batchmode \
