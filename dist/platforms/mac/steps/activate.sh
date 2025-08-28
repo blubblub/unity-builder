@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+# Ensure project directory structure exists
+if [ ! -d "$ACTIVATE_LICENSE_PATH" ]; then
+  mkdir -p "$ACTIVATE_LICENSE_PATH"
+fi
+if [ ! -d "$ACTIVATE_LICENSE_PATH/Assets" ]; then
+  mkdir -p "$ACTIVATE_LICENSE_PATH/Assets"
+fi
+
 # Run in ACTIVATE_LICENSE_PATH directory
 echo "Changing to \"$ACTIVATE_LICENSE_PATH\" directory."
 pushd "$ACTIVATE_LICENSE_PATH"
@@ -74,6 +82,9 @@ if [ -n "$UNITY_CREDENTIALS" ]; then
           email=""
           pass=""
           serial=""
+          
+          # Exit the loop since activation was successful
+          break
         fi
       fi
       
