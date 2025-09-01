@@ -16,7 +16,7 @@ if [ "$SKIP_ACTIVATION" != "true" ]; then
   ACTIVATE_LICENSE_PATH="$ACTION_FOLDER/BlankProject"
   mkdir -p "$ACTIVATE_LICENSE_PATH"
 
-  source $ACTION_FOLDER/platforms/mac/steps/activate.sh
+  $ACTION_FOLDER/platforms/mac/steps/activate.swift
 else
   echo "Skipping activation"
 fi
