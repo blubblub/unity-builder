@@ -14,6 +14,7 @@ if [ "$SKIP_ACTIVATION" != "true" ]; then
   fi;
 
   ACTIVATE_LICENSE_PATH="$ACTION_FOLDER/BlankProject"
+  export ACTIVATE_LICENSE_PATH
   mkdir -p "$ACTIVATE_LICENSE_PATH"
 
   $ACTION_FOLDER/platforms/mac/steps/activate.swift
